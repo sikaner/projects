@@ -1,0 +1,14 @@
+artifact_uri: file:///home/sikandar/projects/app/mlruns/606266525294361095/04f69b657bb840ababc26723a4d3a705/artifacts
+end_time: 1756206857693
+entry_point_name: ''
+experiment_id: '606266525294361095'
+lifecycle_stage: active
+run_id: 04f69b657bb840ababc26723a4d3a705
+run_name: gaudy-cod-196
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1756206853942
+status: 3
+tags: []
+user_id: sikandar

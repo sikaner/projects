@@ -21,5 +21,5 @@ def predict():
     return jsonify({"predictions": preds, "openai_key_present": bool(AIzaSyBaxidtgfq85EIjdMBI-ANKAiOrBqCtQDk)})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=False)
 
