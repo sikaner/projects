@@ -1,0 +1,8 @@
+# from project root
+ansible-playbook -i ansible/inventory ansible/deploy.yml \
+  --private-key ~/.ssh/app_key.pem \
+  -e "repo_url=https://github.com/sikaner/projects.git" \
+  -e "openai_api_key=AIzaSyBaxidtgfq85EIjdMBI-ANKAiOrBqCtQDk" \
+  -e "project_name='My First Project (fast-gate-439411-i4)'" \
+  -v
+
