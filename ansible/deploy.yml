@@ -1,5 +1,5 @@
 ---
-- name: Deploy Dockerized AI app
+- name: Deploy Dockerized AI app on Ubuntu 24.04
   hosts: app_servers
   become: yes
   gather_facts: yes
@@ -14,8 +14,8 @@
         update_cache: yes
         force_apt_get: yes
 
-    # Step 2: Install Docker prerequisites
-    - name: Install prerequisites for Docker
+    # Step 2: Install prerequisites
+    - name: Install prerequisites
       apt:
         name:
           - ca-certificates
@@ -25,56 +25,28 @@
           - software-properties-common
         state: present
 
-    # Step 3: Create keyrings directory
-    - name: Create /etc/apt/keyrings directory
-      file:
-        path: /etc/apt/keyrings
-        state: directory
-        mode: '0755'
-
-    # Step 4: Download Docker GPG key to keyrings
-    - name: Download Docker GPG key
-      ansible.builtin.get_url:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        dest: /etc/apt/keyrings/docker.gpg
-        mode: '0644'
-
-    # Step 5: Add Docker repository for Ubuntu 24.04 (Noble)
-    - name: Add Docker repository
-      ansible.builtin.shell: |
-        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable" | tee /etc/apt/sources.list.d/docker.list
+    # Step 3: Install Docker using official install script
+    - name: Install Docker using Docker convenience script
+      shell: |
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh
       args:
-        creates: /etc/apt/sources.list.d/docker.list
+        creates: /usr/bin/docker
 
-    # Step 6: Update apt after adding Docker repo
-    - name: Update apt cache after adding Docker repo
-      apt:
-        update_cache: yes
-        force_apt_get: yes
-
-    # Step 7: Install Docker CE
-    - name: Install Docker CE and containerd
-      apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-        state: present
-
-    # Step 8: Ensure Docker service is running
+    # Step 4: Ensure Docker service is running
     - name: Ensure Docker service is running
       service:
         name: docker
         state: started
         enabled: yes
 
-    # Step 9: Install Git
+    # Step 5: Install Git
     - name: Install Git
       apt:
         name: git
         state: present
 
-    # Step 10: Clone the project repo
+    # Step 6: Clone project repo
     - name: Clone app repo
       git:
         repo: 'https://github.com/sikaner/projects.git'
@@ -83,8 +55,8 @@
         force: yes
         update: yes
 
-    # Step 11: Create .env file from template
-    - name: Create .env file
+    # Step 7: Create .env file
+    - name: Create .env file from template
       template:
         src: ".env.j2"
         dest: "/home/ubuntu/app/.env"
@@ -92,13 +64,13 @@
         group: ubuntu
         mode: '0644'
 
-    # Step 12: Install community.docker collection
+    # Step 8: Install community.docker collection
     - name: Install Ansible community.docker collection
       ansible.builtin.command: ansible-galaxy collection install community.docker
       args:
         creates: /home/ubuntu/.ansible/collections/ansible_collections/community/docker
 
-    # Step 13: Build Docker image
+    # Step 9: Build Docker image
     - name: Build Docker image
       community.docker.docker_image:
         build:
@@ -106,7 +78,7 @@
         name: app_image
         tag: latest
 
-    # Step 14: Run Docker container
+    # Step 10: Run Docker container
     - name: Run Docker container
       community.docker.docker_container:
         name: app_container
