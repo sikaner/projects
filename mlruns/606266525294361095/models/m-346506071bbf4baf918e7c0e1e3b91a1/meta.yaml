@@ -1,0 +1,10 @@
+artifact_location: file:///home/sikandar/projects/app/mlruns/606266525294361095/models/m-346506071bbf4baf918e7c0e1e3b91a1/artifacts
+creation_timestamp: 1756202997830
+experiment_id: '606266525294361095'
+last_updated_timestamp: 1756203000918
+model_id: m-346506071bbf4baf918e7c0e1e3b91a1
+model_type: null
+name: model
+source_run_id: bca0b5e780924b86a107f55175609d08
+status: 2
+status_message: null

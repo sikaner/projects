@@ -1,0 +1,14 @@
+artifact_uri: file:///home/sikandar/projects/app/mlruns/606266525294361095/f1cd2c1faa8548f7b262189b271002d7/artifacts
+end_time: 1756203453897
+entry_point_name: ''
+experiment_id: '606266525294361095'
+lifecycle_stage: active
+run_id: f1cd2c1faa8548f7b262189b271002d7
+run_name: abrasive-dove-456
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1756203450738
+status: 3
+tags: []
+user_id: sikandar

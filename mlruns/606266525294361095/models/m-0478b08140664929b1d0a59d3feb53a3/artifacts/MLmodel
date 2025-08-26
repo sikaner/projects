@@ -1,0 +1,32 @@
+artifact_path: file:///home/sikandar/projects/app/mlruns/606266525294361095/models/m-0478b08140664929b1d0a59d3feb53a3/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.3
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.1
+is_signature_from_type_hint: false
+mlflow_version: 3.3.1
+model_id: m-0478b08140664929b1d0a59d3feb53a3
+model_size_bytes: 507
+model_uuid: m-0478b08140664929b1d0a59d3feb53a3
+prompts: null
+run_id: f1cd2c1faa8548f7b262189b271002d7
+saved_input_example_info:
+  artifact_path: input_example.json
+  serving_input_path: serving_input_example.json
+  type: ndarray
+signature:
+  inputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1, 1]}}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2025-08-26 10:17:30.781239'
