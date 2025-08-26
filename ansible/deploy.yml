@@ -100,5 +100,3 @@
         ports:
           - "5000:5000"
         env_file: /home/ubuntu/app/.env
-
-
