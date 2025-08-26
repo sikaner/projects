@@ -1,0 +1,14 @@
+artifact_uri: file:///home/sikandar/projects/app/mlruns/606266525294361095/92fd18a1d82c45af9d1ca75cc43aacf3/artifacts
+end_time: 1756195116327
+entry_point_name: ''
+experiment_id: '606266525294361095'
+lifecycle_stage: active
+run_id: 92fd18a1d82c45af9d1ca75cc43aacf3
+run_name: youthful-moose-920
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1756195113827
+status: 3
+tags: []
+user_id: sikandar

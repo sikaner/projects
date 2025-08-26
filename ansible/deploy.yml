@@ -1,0 +1,49 @@
+- hosts: aws
+  become: true
+  vars:
+    app_dir: /home/ubuntu/app
+    repo_url: "https://github.com/YOUR_GITHUB_USER/YOURREPO.git"  # replace
+  pre_tasks:
+    - name: update apt cache
+      apt:
+        update_cache: yes
+
+  roles:
+    - role: geerlingguy.docker
+
+  tasks:
+    - name: ensure git is installed
+      apt:
+        name: git
+        state: present
+
+    - name: clone the app repo
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+
+    - name: render .env file from template
+      template:
+        src: templates/.env.j2
+        dest: "{{ app_dir }}/.env"
+        mode: '0644'
+
+    - name: build docker image
+      community.docker.docker_image:
+        build:
+          path: "{{ app_dir }}"
+        name: app_image
+        tag: latest
+
+    - name: run container
+      community.docker.docker_container:
+        name: app
+        image: app_image:latest
+        state: started
+        restart_policy: always
+        env_file: "{{ app_dir }}/.env"
+        published_ports:
+          - "5000:5000"
+  

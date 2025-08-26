@@ -1,0 +1,2 @@
+[aws]
+app ansible_host=EC2_IP ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/yourkey.pem
