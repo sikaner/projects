@@ -1,49 +1,50 @@
-  - hosts: aws
-  become: true
+- name: Deploy Dockerized AI app
+  hosts: app_servers
+  become: yes
   vars:
-    app_dir: /home/ubuntu/app
-    repo_url: "https://github.com/sikaner/projects.git"  # replace
-  pre_tasks:
-    - name: update apt cache
+    openai_api_key: "AIzaSyBaxidtgfq85EIjdMBI-ANKAiOrBqCtQDk"
+    mlflow_uri: "http://13.49.238.45:5000"
+
+  tasks:
+    - name: Update apt
       apt:
         update_cache: yes
 
-  roles:
-    - role: geerlingguy.docker
-
-  tasks:
-    - name: ensure git is installed
+    - name: Install Docker
       apt:
-        name: git
+        name: docker.io
         state: present
 
-    - name: clone the app repo
+    - name: Install Python3-pip
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Copy app repo
       git:
-        repo: "{{ repo_url }}"
-        dest: "{{ app_dir }}"
+        repo: 'https://github.com/sikaner/projects.git'
+        dest: /home/ubuntu/app
         version: main
-        force: yes
 
-    - name: render .env file from template
+    - name: Create .env file
       template:
-        src: templates/.env.j2
-        dest: "{{ app_dir }}/.env"
-        mode: '0644'
+        src: ".env.j2"
+        dest: "/home/ubuntu/app/.env"
 
-    - name: build docker image
+    - name: Build Docker image
       community.docker.docker_image:
         build:
-          path: "{{ app_dir }}"
+          path: /home/ubuntu/app
         name: app_image
         tag: latest
 
-    - name: run container
+    - name: Run Docker container
       community.docker.docker_container:
-        name: app
+        name: app_container
         image: app_image:latest
         state: started
         restart_policy: always
-        env_file: "{{ app_dir }}/.env"
-        published_ports:
+        ports:
           - "5000:5000"
-  
+        env_file: /home/ubuntu/app/.env
+
