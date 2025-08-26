@@ -1,8 +1,8 @@
-- hosts: aws
+  - hosts: aws
   become: true
   vars:
     app_dir: /home/ubuntu/app
-    repo_url: "https://github.com/YOUR_GITHUB_USER/YOURREPO.git"  # replace
+    repo_url: "https://github.com/sikaner/projects.git"  # replace
   pre_tasks:
     - name: update apt cache
       apt:
