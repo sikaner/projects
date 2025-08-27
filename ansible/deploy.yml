@@ -1,90 +1,62 @@
 ---
-- name: Deploy Dockerized AI app on Ubuntu 24.04
-  hosts: app_servers
-  become: yes
-  gather_facts: yes
-  vars:
-    openai_api_key: "AIzaSyBaxidtgfq85EIjdMBI-ANKAiOrBqCtQDk"
-    mlflow_uri: "http://13.49.238.45:5000"
 
-  tasks:
-    # Step 1: Update apt cache
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        force_apt_get: yes
 
-    # Step 2: Install prerequisites
-    - name: Install prerequisites
-      apt:
-        name:
-          - ca-certificates
-          - curl
-          - gnupg
-          - lsb-release
-          - software-properties-common
-        state: present
+pre_tasks:
+- name: Ensure required apt packages are present
+ansible.builtin.apt:
+name:
+- python3-pip
+- git
+update_cache: yes
 
-    # Step 3: Install Docker using official install script
-    - name: Install Docker using Docker convenience script
-      shell: |
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        sh get-docker.sh
-      args:
-        creates: /usr/bin/docker
 
-    # Step 4: Ensure Docker service is running
-    - name: Ensure Docker service is running
-      service:
-        name: docker
-        state: started
-        enabled: yes
+roles:
+- role: geerlingguy.docker # installed via ansible-galaxy
 
-    # Step 5: Install Git
-    - name: Install Git
-      apt:
-        name: git
-        state: present
 
-    # Step 6: Clone project repo
-    - name: Clone app repo
-      git:
-        repo: 'https://github.com/sikaner/projects.git'
-        dest: /home/ubuntu/app
-        version: main
-        force: yes
-        update: yes
+tasks:
+- name: Ensure Docker Python SDK is installed
+ansible.builtin.pip:
+name: docker
 
-    # Step 7: Create .env file
-    - name: Create .env file from template
-      template:
-        src: ".env.j2"
-        dest: "/home/ubuntu/app/.env"
-        owner: ubuntu
-        group: ubuntu
-        mode: '0644'
 
-    # Step 8: Install community.docker collection
-    - name: Install Ansible community.docker collection
-      ansible.builtin.command: ansible-galaxy collection install community.docker
-      args:
-        creates: /home/ubuntu/.ansible/collections/ansible_collections/community/docker
+- name: Create application directory
+ansible.builtin.file:
+path: "{{ app_dir }}"
+state: directory
+mode: "0755"
 
-    # Step 9: Build Docker image
-    - name: Build Docker image
-      community.docker.docker_image:
-        build:
-          path: /home/ubuntu/app
-        name: app_image
-        tag: latest
 
-    # Step 10: Run Docker container
-    - name: Run Docker container
-      community.docker.docker_container:
-        name: app_container
-        image: app_image:latest
-        state: started
-        restart_policy: always
-        ports:
-          - "5000:5000"
-        env_file: /home/ubuntu/app/.env
+- name: Copy project source to target
+ansible.builtin.copy:
+src: ".." # from ansible/ directory, copy the parent (the app root)
+dest: "{{ app_dir }}"
+owner: root
+group: root
+mode: "0644"
+
+
+- name: Render .env from template
+ansible.builtin.template:
+src: templates/.env.j2
+dest: "{{ app_dir }}/.env"
+mode: "0600"
+
+
+- name: Build Docker image
+community.docker.docker_image:
+name: "{{ image_name }}"
+build:
+path: "{{ app_dir }}"
+source: build
+
+
+- name: Run (or restart) container
+community.docker.docker_container:
+name: "{{ app_name }}"
+image: "{{ image_name }}"
+state: started
+restart_policy: unless-stopped
+env_file: "{{ app_dir }}/.env"
+published_ports:
+- "{{ app_port | default('8000') }}:8000"
