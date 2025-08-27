@@ -1,40 +1,38 @@
+import os
+import numpy as np
+from sklearn.linear_model import LinearRegression
 import mlflow
 import mlflow.sklearn
-from mlflow.models.signature import infer_signature
-from sklearn.linear_model import LinearRegression
-import numpy as np
-import joblib
-import os
+
 
 def main():
-    # Training data
-    X = np.array([[i] for i in range(10)])
-    y = np.array([2*i + 1 for i in range(10)])
+# Tiny synthetic dataset: y = 2x + 3
+X = np.arange(0, 100, dtype=float).reshape(-1, 1)
+y = 2 * X.flatten() + 3
 
-    # Train model
-    model = LinearRegression()
-    model.fit(X, y)
 
-    # MLflow logging
-    mlflow.set_experiment("My First Project (fast-gate-439411-i4)")
-    with mlflow.start_run():
-        mlflow.log_param("model", "LinearRegression")
-        mlflow.log_metric("r2", model.score(X, y))
+model = LinearRegression()
+model.fit(X, y)
 
-        # Log model with proper name, signature & input example
-        mlflow.sklearn.log_model(
-            sk_model=model,
-            name="linear_regression_model",
-            input_example=X[:2],
-            signature=infer_signature(X, model.predict(X))
-        )
 
-    # Save local artifact for Flask
-    os.makedirs("model", exist_ok=True)
-    joblib.dump(model, "model/model.pkl")
-    print("Saved model to model/model.pkl")
+# Track locally inside the project folder.
+mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_experiment("demo-mlflow")
+
+
+with mlflow.start_run(run_name="linreg-demo"):
+mlflow.log_param("coef0", float(model.coef_[0]))
+mlflow.log_param("intercept", float(model.intercept_))
+mlflow.sklearn.log_model(model, artifact_path="model")
+
+
+# Also save a copy as an MLflow model directory that the API will load.
+os.makedirs("model", exist_ok=True)
+mlflow.sklearn.save_model(sk_model=model, path="model")
+print("Model saved to ./model (MLflow format)")
+
+
+
 
 if __name__ == "__main__":
-    main()
-
-
+main()
