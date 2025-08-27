@@ -1,6 +1,2 @@
-[app_servers]
-13.49.238.45 ansible_user=ubuntu ansible_ssh_private_key_file=/home/sikandar/keys/app_key.pem
-
-
-
-
+[app]
+localhost ansible_connection=local

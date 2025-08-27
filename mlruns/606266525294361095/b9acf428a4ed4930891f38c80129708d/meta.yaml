@@ -1,0 +1,14 @@
+artifact_uri: file:///home/sikandar/projects/app/mlruns/606266525294361095/b9acf428a4ed4930891f38c80129708d/artifacts
+end_time: 1756226428280
+entry_point_name: ''
+experiment_id: '606266525294361095'
+lifecycle_stage: active
+run_id: b9acf428a4ed4930891f38c80129708d
+run_name: efficient-stag-903
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1756226425284
+status: 3
+tags: []
+user_id: sikandar

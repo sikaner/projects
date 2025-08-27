@@ -1,0 +1,10 @@
+artifact_location: file:///home/sikandar/projects/app/mlruns/606266525294361095/models/m-dcef615e1f6743b493b4fa3c7ed1df98/artifacts
+creation_timestamp: 1756226425316
+experiment_id: '606266525294361095'
+last_updated_timestamp: 1756226428275
+model_id: m-dcef615e1f6743b493b4fa3c7ed1df98
+model_type: null
+name: linear_regression_model
+source_run_id: b9acf428a4ed4930891f38c80129708d
+status: 2
+status_message: null
